@@ -7,6 +7,7 @@ package com.meishu.android.beatbox.beatbox;
 public class Sound {
     private String assetPath;
     private String name;
+    private Integer soundID;
 
     public Sound(String assetPath) {
         this.assetPath = assetPath;
@@ -21,5 +22,13 @@ public class Sound {
 
     public String getName() {
         return name;
+    }
+
+    public Integer getSoundID() {
+        return soundID;
+    }
+
+    public void setSoundID(Integer integer) {
+        soundID = integer;
     }
 }
