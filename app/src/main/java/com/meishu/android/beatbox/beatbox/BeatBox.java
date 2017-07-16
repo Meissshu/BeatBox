@@ -63,6 +63,14 @@ public class BeatBox {
         sound.setSoundID(soundID);
     }
 
+    public void playSound(Sound sound) {
+        Integer soundID = sound.getSoundID();
+        if (soundID == null) {
+            return;
+        }
+        soundPool.play(soundID, 1.0f, 1.0f, 1, 0, 1.0f);
+    }
+
     public List<Sound> getSounds() {
         return sounds;
     }
