@@ -1,7 +1,10 @@
 package com.meishu.android.beatbox.beatbox;
 
 import android.content.Context;
+import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.util.Log;
 
 import java.io.IOException;
@@ -14,15 +17,19 @@ import java.util.List;
 
 public class BeatBox {
 
-    public static final String TAG = "BeatBox"; // для логирования
+    private static final String TAG = "BeatBox"; // для логирования
 
-    public static final String SOUNDS_FOLDER = "sample_sounds"; // имя папки
+    private static final String SOUNDS_FOLDER = "sample_sounds"; // имя папки
+
+    private static final int MAX_SOUNDS = 5;
 
     private AssetManager assetManager; // используется для обращения к assets
     private List<Sound> sounds = new ArrayList<>();
+    private SoundPool soundPool;
 
     public BeatBox(Context context) {
         assetManager = context.getAssets();
+        soundPool = new SoundPool(MAX_SOUNDS, AudioManager.STREAM_MUSIC, 0); // deprecated, но нужен для обеспечения совместимости
         loadSounds();
     }
 
@@ -38,10 +45,34 @@ public class BeatBox {
         }
 
         for (String fileName : soundNames) {
-            String assetPath = SOUNDS_FOLDER + "/" + fileName;
-            Sound sound = new Sound(assetPath);
-            sounds.add(sound);
+            try {
+                String assetPath = SOUNDS_FOLDER + "/" + fileName;
+                Sound sound = new Sound(assetPath);
+                loadSoundToSoundPool(sound);
+                sounds.add(sound);
+            }
+            catch (IOException e) {
+                Log.e(TAG, "Cannot load sound " + fileName, e);
+            }
         }
+    }
+
+    private void loadSoundToSoundPool(Sound sound) throws IOException {
+        AssetFileDescriptor assetFileDescriptor = assetManager.openFd(sound.getAssetPath());
+        int soundID = soundPool.load(assetFileDescriptor, 1);
+        sound.setSoundID(soundID);
+    }
+
+    public void playSound(Sound sound) {
+        Integer soundID = sound.getSoundID();
+        if (soundID == null) {
+            return;
+        }
+        soundPool.play(soundID, 1.0f, 1.0f, 1, 0, 1.0f);
+    }
+
+    public void release() {
+        soundPool.release();
     }
 
     public List<Sound> getSounds() {
