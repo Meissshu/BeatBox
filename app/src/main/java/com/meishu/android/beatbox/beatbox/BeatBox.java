@@ -2,6 +2,8 @@ package com.meishu.android.beatbox.beatbox;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.util.Log;
 
 import java.io.IOException;
@@ -14,15 +16,19 @@ import java.util.List;
 
 public class BeatBox {
 
-    public static final String TAG = "BeatBox"; // для логирования
+    private static final String TAG = "BeatBox"; // для логирования
 
-    public static final String SOUNDS_FOLDER = "sample_sounds"; // имя папки
+    private static final String SOUNDS_FOLDER = "sample_sounds"; // имя папки
+
+    private static final int MAX_SOUNDS = 5;
 
     private AssetManager assetManager; // используется для обращения к assets
     private List<Sound> sounds = new ArrayList<>();
+    private SoundPool soundPool;
 
     public BeatBox(Context context) {
         assetManager = context.getAssets();
+        soundPool = new SoundPool(MAX_SOUNDS, AudioManager.STREAM_MUSIC, 0); // deprecated, но нужен для обеспечения совместимости
         loadSounds();
     }
 
