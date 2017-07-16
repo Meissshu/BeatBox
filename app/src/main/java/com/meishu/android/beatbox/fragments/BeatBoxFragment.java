@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.meishu.android.beatbox.R;
+import com.meishu.android.beatbox.beatbox.BeatBox;
 
 /**
  * Created by Meishu on 16.07.2017.
@@ -19,9 +20,16 @@ import com.meishu.android.beatbox.R;
 public class BeatBoxFragment extends Fragment {
 
     private RecyclerView recyclerView;
+    private BeatBox beatBox;
 
     public static BeatBoxFragment newInstance() {
         return new BeatBoxFragment();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        beatBox = new BeatBox(getActivity());
     }
 
     @Nullable
